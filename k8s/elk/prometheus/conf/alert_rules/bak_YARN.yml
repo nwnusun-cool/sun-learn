@@ -1,0 +1,48 @@
+groups:
+- name: YARN
+  rules:
+  - alert: ResourceManager进程意外终止
+    expr: up{job="resourcemanager"}!=1
+    for: 3m
+    labels:
+      level: down
+      service: YARN
+      ruleId: 574
+    annotations:
+      summary: 查看日志，分析宕机原因，解决问题后重新启动
+  - alert: ResourceManager堆内存使用率
+    expr: java_lang_Memory_HeapMemoryUsage_used{job="resourcemanager"}*100/java_lang_Memory_HeapMemoryUsage_max{job="resourcemanager"}>95
+    for: 3m
+    labels:
+      level: unhealthy
+      service: YARN
+      ruleId: 575
+    annotations:
+      summary: 请联系管理员
+  - alert: NodeManager进程意外终止
+    expr: up{job="nodemanager"}!=1
+    for: 3m
+    labels:
+      level: down
+      service: YARN
+      ruleId: 579
+    annotations:
+      summary: 查看日志，分析宕机原因，解决问题后重新启动
+  - alert: NodeManager堆内存使用率
+    expr: java_lang_Memory_HeapMemoryUsage_used{job="nodemanager"}*100/java_lang_Memory_HeapMemoryUsage_max{job="nodemanager"}>95
+    for: 3m
+    labels:
+      level: unhealthy
+      service: YARN
+      ruleId: 580
+    annotations:
+      summary: 请联系管理员
+  - alert: HistoryServer进程意外终止
+    expr: up{job="yarnhistoryserver"}!=1
+    for: 3m
+    labels:
+      level: down
+      service: YARN
+      ruleId: 627
+    annotations:
+      summary: 查看日志，分析宕机原因，解决问题后重新启动

@@ -1,0 +1,89 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - ${ALERTMANAGER}
+rule_files:
+- alert_rules/use*.yml
+scrape_configs:
+- job_name: nodeexporter
+  static_configs:
+  - targets: []
+- job_name: namenode
+  static_configs:
+  - targets: []
+- job_name: datanode
+  static_configs:
+  - targets: []
+- job_name: journalnode
+  static_configs:
+  - targets: []
+- job_name: nodemanager
+  static_configs:
+  - targets: []
+- job_name: resourcemanager
+  static_configs:
+  - targets: []
+- job_name: yarnhistoryserver
+  static_configs:
+  - targets: []
+- job_name: zkserver
+  static_configs:
+  - targets: []
+- job_name: hivemetastore
+  static_configs:
+  - targets: []
+- job_name: hiveserver2
+  static_configs:
+  - targets: []
+- job_name: elasticsearch
+  static_configs:
+  - targets: []
+- job_name: flinkhistoryserver
+  static_configs:
+  - targets: []
+- job_name: sparkhistoryserver
+  static_configs:
+  - targets: []
+- job_name: rangeradmin
+  static_configs:
+  - targets: []
+- job_name: rangeruser
+  static_configs:
+  - targets: []
+- job_name: zkfc
+  static_configs:
+  - targets: []
+- job_name: flinkserver
+  static_configs:
+  - targets: []
+- job_name: kafkabroker
+  static_configs:
+  - targets: []
+- job_name: HMaster
+  static_configs:
+  - targets: []
+- job_name: HRegionServer
+  static_configs:
+  - targets: []
+- job_name: ThriftServer
+  static_configs:
+  - targets: []
+- job_name: RESTServer
+  static_configs:
+  - targets: []
+- job_name: process
+  static_configs:
+  - targets: []
+- job_name: clickhouse
+  static_configs:
+  - targets: []
+- job_name: Coordinator
+  static_configs:
+  - targets: []
+- job_name: Worker
+  static_configs:
+  - targets: []

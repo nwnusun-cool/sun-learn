@@ -1,0 +1,15 @@
+# 编写一个Dockerfile，用于构建一个包含Prometheus的镜像
+FROM centos:7.6.1810
+
+ADD prometheus-2.36.1.linux-386.tar.gz  /usr/local/
+
+RUN ln -s /usr/local/prometheus-2.36.1.linux-386/prometheus  /usr/local/bin/  && \
+    mv /usr/local/prometheus-2.36.1.linux-386  /usr/local/prometheus
+
+
+WORKDIR /usr/local/prometheus
+
+EXPOSE 9090
+
+CMD ["sh", "-c", "/usr/local/prometheus/prometheus --config.file=/usr/local/prometheus/prometheus.yml --storage.tsdb.path=/prometheus --storage.tsdb.retention=720h --web.enable-lifecycle >> /usr/local/prometheus/prometheus.log 2>&1"]
+

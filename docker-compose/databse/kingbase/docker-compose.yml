@@ -1,0 +1,20 @@
+services:
+  mysql-db:
+    container_name: kingbase
+    image: kingbase:v1 # 官方提供镜像，目前在github没有
+    command:
+      - /usr/sbin/init
+    ports:
+      - "54321:54321"
+    restart: always
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '5g'
+    environment:
+      - NEED_START
+      - DB_USER
+      - DB_PASSWORD
+      - DB_MODE
+    volumes:
+      - ./kingbase/data:/home/kingbase/userdata

@@ -1,0 +1,12 @@
+output.logstash:
+  # The Logstash hosts
+  hosts: [ "${LOGSTASH_SERVICE_HOST}:${LOGSTASH_SERVICE_PORT}" ]
+
+# ============================== Filebeat inputs ===============================
+
+filebeat.inputs:
+  - type: log
+    id: my-filestream-id
+    enabled: true
+    paths:
+      - /srv/dstore/1.0.0.0/nfs/dstore/hbis-dstore-hop.log

@@ -1,0 +1,13 @@
+apiVersion: 1
+
+datasources:
+- name: Prometheus
+  type: prometheus
+  access: proxy
+  url: http://192.168.2.180:9090
+  basicAuth: false
+  jsonData:
+    graphiteVersion: "1.1"
+    tlsAuth: false
+    tlsAuthWithCACert: false
+

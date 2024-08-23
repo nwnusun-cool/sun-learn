@@ -1,0 +1,73 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  labels:
+    app: grafana
+  name: grafana
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      securityContext:
+        runAsUser: 0
+      containers:
+        - name: grafana
+          image: grafana/grafana:9.4.3
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: GF_AUTH_BASIC_ENABLED
+              value: "true"
+            - name: GF_AUTH_ANONYMOUS_ENABLED
+              value: "false"
+            - name: GF_PATHS_LOGS
+              value: "/var/lib/grafana/log"  # 日志路径
+            - name: GF_PATHS_HOME
+              value: "/usr/share/grafana"
+            - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+              value: Admin
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: 3000
+          volumeMounts:
+            - mountPath: /var/lib/grafana
+              name: grafana-data-volume
+          #            - mountPath: /usr/share/grafana/conf
+          #              name: config-volume
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+      volumes:
+        - name: grafana-data-volume
+          hostPath:
+            path: /srv/dstore/1.0.0.0/nfs/grafana/data # 数据挂载路径
+            type: DirectoryOrCreate
+#        - name: config-volume
+#          hostPath:
+#            path: /srv/dstore/1.0.0.0/nfs/grafana/conf # 配置文件挂载路径
+#            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-service
+  labels:
+    app: grafana
+spec:
+  selector:
+    app: grafana
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 30001
+  type: NodePort
+---

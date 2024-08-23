@@ -1,0 +1,84 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: filebeat-deployment
+  labels:
+    app: filebeat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: filebeat
+  template:
+    metadata:
+      labels:
+        app: filebeat
+    spec:
+      containers:
+        - name: filebeat
+          image: docker.elastic.co/beats/filebeat:7.17.0
+          args: [
+            "-e",
+            "-c", "/etc/filebeat.yml",
+          ]
+          env:
+            - name: LOGSTASH_SERVICE_HOST
+              value: logstash-service  # 此处填入你的logstash service 地址
+            - name: LOGSTASH_SERVICE_PORT
+              value: "5044" # 此处填入你的logstash service 端口
+          volumeMounts:
+            - name: config
+              mountPath: /etc/filebeat.yml
+              subPath: filebeat.yml
+            - name: nfslog
+              mountPath: /srv/dstore/1.0.0.0/nfs # 此处填入你的NFS挂载点
+      volumes:
+        - name: config
+          configMap:
+            name: filebeat-config #  此处填入你的configmap名称
+        - name: nfslog
+          persistentVolumeClaim:
+            claimName: dstorepvc #  此处填入你的pvc名称
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: filebeat-service
+spec:
+  selector:
+    app: filebeat  # 这里指定与 Logstash Deployment 相同的标签选择器
+  ports:
+    - protocol: TCP
+      port: 544 # 这里填写你需要暴露的端口号
+      targetPort: 5044  # 这里填写 Logstash Pod 内部监听的端口号
+      nodePort: 30001
+  type: NodePort
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: dstorepv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: nfs
+  nfs:
+    path: /srv/dstore/1.0.0.0/nfs # 此处填入你的NFS挂载点
+    server: 192.168.2.61
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: dstorepvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: nfs
+---

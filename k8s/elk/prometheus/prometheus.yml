@@ -1,0 +1,58 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+        - name: prometheus
+          image: prom/prometheus:v2.36.1
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 0 # 以root用户运行，不然日志重定向没有权限
+          command:
+            - sh
+            - -c
+            - |
+              prometheus --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus --storage.tsdb.retention=720h --web.enable-lifecycle >>/etc/prometheus/prometheus.log 2>&1
+          ports:
+            - containerPort: 9090
+              protocol: TCP
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/prometheus
+          env:
+            - name: ALERTMANAGER
+              value: "192.168.2.180:9093" # alertmanager service 地址
+      volumes:
+        - name: config-volume
+          hostPath:
+            path: /srv/dstore/1.0.0.0/nfs/prometheus # 集群每个节点都要创建
+            type: DirectoryOrCreate
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-service
+  labels:
+    app: prometheus
+spec:
+  selector:
+    app: prometheus
+  ports:
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
+      nodePort: 30000
+  type: NodePort
+---

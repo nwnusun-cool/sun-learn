@@ -1,0 +1,18 @@
+services:
+  mysql-db:
+    container_name: gbase8s
+    image: liaosnet/gbase8s:v8.8_3503x1_x64
+    ports:
+      - "19088 :9088 "
+    restart: always
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '5g'
+    environment:
+      - SERVERNAME
+      - USERPASS
+      - CPUS
+      - MEMS
+    volumes:
+      - ./kingbase/data:/home/kingbase/userdata

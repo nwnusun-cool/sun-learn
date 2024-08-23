@@ -1,0 +1,12 @@
+groups:
+- name: ZOOKEEPER
+  rules:
+  - alert: ZK进程意外终止
+    expr: up{job="zkserver"}!=1
+    for: 3m
+    labels:
+      level: down
+      service: ZOOKEEPER
+      ruleId: 573
+    annotations:
+      summary: 查看日志，分析宕机原因，解决问题后重新启动

@@ -1,0 +1,6 @@
+- pipeline.id: DSTORE
+  #queue.type: persisted
+  path.config: "/usr/share/logstash/config/logstash-beat.conf"
+  pipeline.workers: 2
+  pipeline.batch.size: 1000
+  pipeline.batch.delay: 10

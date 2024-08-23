@@ -1,0 +1,17 @@
+services:
+  mysql-db:
+    container_name: mysql
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    restart: always
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '5g'
+    environment:
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_USER
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/config:/etc/mysql/conf.d

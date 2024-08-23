@@ -1,0 +1,39 @@
+groups:
+- name: HBASE
+  rules:
+  - alert: HMaster进程意外终止
+    expr: up{job="HMaster"}!=1
+    for: 3m
+    labels:
+      level: down
+      service: HBASE
+      ruleId: 519
+    annotations:
+      summary: 查看日志，分析宕机原因，解决问题后重新启动
+  - alert: HRegionServer进程意外终止
+    expr: up{job="HRegionServer"}!=1
+    for: 3m
+    labels:
+      level: down
+      service: HBASE
+      ruleId: 520
+    annotations:
+      summary: 查看日志，分析宕机原因，解决问题后重新启动
+  - alert: ThriftServer进程意外终止
+    expr: up{job="ThriftServer"}!=1
+    for: 3m
+    labels:
+      level: down
+      service: HBASE
+      ruleId: 649
+    annotations:
+      summary: 查看日志，分析宕机原因，解决问题后重新启动
+  - alert: RESTServer进程意外终止
+    expr: up{job="RESTServer"}!=1
+    for: 3m
+    labels:
+      level: down
+      service: HBASE
+      ruleId: 650
+    annotations:
+      summary: 查看日志，分析宕机原因，解决问题后重新启动

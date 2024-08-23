@@ -1,0 +1,77 @@
+groups:
+- name: HDFS
+  rules:
+  - alert: NameNode进程意外终止
+    expr: up{job="namenode"}!=1
+    for: 3m
+    labels:
+      level: down
+      service: HDFS
+      ruleId: 479
+    annotations:
+      summary: 查看日志，分析宕机原因，解决问题后重新启动
+  - alert: NameNode堆内存使用率
+    expr: java_lang_Memory_HeapMemoryUsage_used{job="namenode"}*100/java_lang_Memory_HeapMemoryUsage_max{job="namenode"}>95
+    for: 3m
+    labels:
+      level: unhealthy
+      service: HDFS
+      ruleId: 482
+      notice: ""
+    annotations:
+      summary: NameNode堆内存不足，增大NameNode堆内存111
+  - alert: DataNode进程意外终止
+    expr: up{job="datanode"}!=1
+    for: 3m
+    labels:
+      level: down
+      service: HDFS
+      ruleId: 486
+    annotations:
+      summary: 查看日志，分析宕机原因，解决问题后重新启动
+  - alert: DataNode堆内存使用率
+    expr: java_lang_Memory_HeapMemoryUsage_used{job="datanode"}*100/java_lang_Memory_HeapMemoryUsage_max{job="datanode"}>95
+    for: 3m
+    labels:
+      level: unhealthy
+      service: HDFS
+      ruleId: 489
+      notice: ""
+    annotations:
+      summary: NameNode堆内存不足，增大NameNode堆内存
+  - alert: JournalNode进程意外终止
+    expr: up{job="journalnode"}!=1
+    for: 3m
+    labels:
+      level: down
+      service: HDFS
+      ruleId: 493
+    annotations:
+      summary: 查看日志，分析宕机原因，解决问题后重新启动
+  - alert: ZKFailoverController进程意外终止
+    expr: up{job="zkfc"}!=1
+    for: 3m
+    labels:
+      level: down
+      service: HDFS
+      ruleId: 494
+    annotations:
+      summary: 查看日志，分析宕机原因，解决问题后重新启动
+  - alert: HDFS坏盘
+    expr: Hadoop_NameNode_VolumeFailuresTotal{name="FSNamesystem"}>0
+    for: 3m
+    labels:
+      level: unhealthy
+      service: HDFS
+      ruleId: 496
+    annotations:
+      summary: 存在坏盘
+  - alert: HDFS块丢失
+    expr: Hadoop_NameNode_MissingBlocks{name="FSNamesystem"}>0
+    for: 3m
+    labels:
+      level: unhealthy
+      service: HDFS
+      ruleId: 497
+    annotations:
+      summary: 存在块丢失

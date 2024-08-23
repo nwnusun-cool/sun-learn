@@ -1,0 +1,12 @@
+groups:
+- name: ELASTICSEARCH
+  rules:
+  - alert: ElasticSearch进程意外终止
+    expr: up{job="elasticsearch"}!=1
+    for: 3m
+    labels:
+      level: down
+      service: ELASTICSEARCH
+      ruleId: 619
+    annotations:
+      summary: 查看日志，分析宕机原因，解决问题后重新启动

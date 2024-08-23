@@ -1,0 +1,77 @@
+groups:
+- name: NODE
+  rules:
+  - alert: 主机内存使用率
+    expr: (1-(node_memory_MemAvailable_bytes/(node_memory_MemTotal_bytes)))*100>95
+    for: 3m
+    labels:
+      level: down
+      service: NODE
+      ruleId: 464
+      notice: ""
+    annotations:
+      summary: 减少任务
+  - alert: 主机CPU使用率
+    expr: (1-avg(irate(node_cpu_seconds_total{mode="idle"}[5m]))by(instance))*100>95
+    for: 3m
+    labels:
+      level: down
+      service: NODE
+      ruleId: 465
+      notice: 84
+    annotations:
+      summary: 减少任务
+  - alert: 主机内存使用率
+    expr: (1-(node_memory_MemAvailable_bytes/(node_memory_MemTotal_bytes)))*100>80
+    for: 3m
+    labels:
+      level: unhealthy
+      service: NODE
+      ruleId: 470
+    annotations:
+      summary: 减少任务
+  - alert: 主机CPU使用率
+    expr: (1-avg(irate(node_cpu_seconds_total{mode="idle"}[5m]))by(instance))*100>80
+    for: 3m
+    labels:
+      level: unhealthy
+      service: NODE
+      ruleId: 471
+    annotations:
+      summary: 减少任务
+  - alert: 系统平均负载[1m]
+    expr: node_load1>95
+    for: 3m
+    labels:
+      level: unhealthy
+      service: NODE
+      ruleId: 473
+    annotations:
+      summary: 系统负载过高
+  - alert: 系统平均负载[5m]
+    expr: node_load5>95
+    for: 3m
+    labels:
+      level: unhealthy
+      service: NODE
+      ruleId: 474
+    annotations:
+      summary: 系统负载过高
+  - alert: 系统平均负载[15m]
+    expr: node_load15>95
+    for: 3m
+    labels:
+      level: unhealthy
+      service: NODE
+      ruleId: 475
+    annotations:
+      summary: 系统负载过高
+  - alert: Node进程意外终止
+    expr: up{job="nodeexporter"}!=1
+    for: 3m
+    labels:
+      level: down
+      service: NODE
+      ruleId: 478
+    annotations:
+      summary: 查看日志，分析宕机原因，解决问题后重新启动

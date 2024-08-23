@@ -1,0 +1,21 @@
+groups:
+- name: KERBEROS
+  rules:
+  - alert: Krb5kdc进程意外终止
+    expr: namedprocess_namegroup_num_procs{groupname="map[:krb5kdc]"}!=1
+    for: 3m
+    labels:
+      level: down
+      service: KERBEROS
+      ruleId: 647
+    annotations:
+      summary: 重启
+  - alert: Kadmin进程意外终止
+    expr: namedprocess_namegroup_num_procs{groupname="map[:kadmind]"}!=1
+    for: 3m
+    labels:
+      level: down
+      service: KERBEROS
+      ruleId: 648
+    annotations:
+      summary: 重启
